@@ -674,7 +674,7 @@ color: rgb(255, 255, 255); font-size: 18px;  background-color: rgb(247, 148, 29)
 	
 
 	/*  General   */
-	.big_padding { padding: 60px 0; }
+	.big_padding { padding: 15px 0; }
 	.normal_padding { padding: 30px 0; }
 	.small_padding { padding: 20px 0; }
 	.h_padding { padding-left: 20px;padding-right: 20px; }
@@ -706,6 +706,7 @@ color: rgb(255, 255, 255); font-size: 18px;  background-color: rgb(247, 148, 29)
 	.title_140 { font-size: 140px;line-height: 145px; }
 	.title_70 { font-size: 70px;line-height: 75px; }
 	.title_56 { font-size: 56px;line-height: 65px; }
+	.title_24 { font-size: 24px;line-height: 65px; }
 	.big_title { font-size: 48px;line-height: 52px; }
 	.normal_title { font-size: 30px;line-height: 35px; }
 	.big_text { font-size: 22px;line-height: 30px; }
@@ -925,10 +926,10 @@ color: rgb(255, 255, 255); font-size: 18px;  background-color: rgb(247, 148, 29)
 			opacity: 0.7;
 		}
 		#result { width: 100%;display: inline-block;}
-		.success { border: 2px solid #82b541;border-radius: 3px;padding: 15px 10px;font-weight: bold;margin-bottom: 15px; }
-		.error { border: 2px solid red;border-radius: 3px;padding: 15px 10px;font-weight: bold;margin-bottom: 15px; }
+		.success { border: 2px solid #82b541;border-radius: 3px;padding: 15px 10px;font-weight: bold;margin-bottom: 15px;color:grey; }
+		.error { border: 2px solid red;border-radius: 3px;padding: 15px 10px;font-weight: bold;margin-bottom: 15px;color:grey; }
 		button.submit_btn { margin-bottom: 10px; }
-		.pix_note { color: #aaa;margin: 0px; }
+		.pix_note { color: #000;margin: 0px; }
 
 		.max_400 { max-width: 400px;}
 
@@ -975,8 +976,8 @@ color: rgb(255, 255, 255); font-size: 18px;  background-color: rgb(247, 148, 29)
 		.brown, .brown:hover, .brown i { color: #554263; }
 		.brown_bg { background: #554263; }
 
-		.orange, .orange:hover, .orange i, .orange:visited, .orange:focus { color: #f77825; }
-		.orange_bg, .orange_bg:visited, .orange_bg:focus, .orange_bg:hover { background: #f77825; }
+		.orange, .orange:hover, .orange i, .orange:visited, .orange:focus { color: #00aeef; }
+		.orange_bg, .orange_bg:visited, .orange_bg:focus, .orange_bg:hover { background: #fff; }
 
 		.green_blue, .green_blue:hover, .green_blue i { color: #50b99a; }
 		.green_blue_bg, .green_blue_bg:visited, .green_blue_bg:focus, .green_blue_bg:hover { background: #50b99a; }
@@ -984,7 +985,7 @@ color: rgb(255, 255, 255); font-size: 18px;  background-color: rgb(247, 148, 29)
 		.light_blue, .light_blue:hover, .light_blue i { color: #2dc0e8; }
 		.light_blue_bg, .light_blue_bg:hover, .light_blue_bg:visited, .light_blue_bg:focus { background: #2dc0e8; }
 
-		.green_1, .green_1:hover, .green_1 i, .green_1:visited, .green_1:focus { color: #AE0202; }
+		.green_1, .green_1:hover, .green_1 i, .green_1:visited, .green_1:focus { color: #00aeef; }
 		.green_1_bg, .green_1_bg:hover, .green_1_bg:visited, .green_1_bg:focus { background: #82b541; }
 
 		.blue_text, .blue_text:visited, .blue_text:hover, .blue_text:focus { color: #2dc0e8;margin-bottom: 10px;display: inline-block; }
@@ -996,8 +997,8 @@ color: rgb(255, 255, 255); font-size: 18px;  background-color: rgb(247, 148, 29)
 		.dark_yellow, .dark_yellow:hover, .dark_yellow i, a.dark_yellow { color: #fbb034; }
 		.dark_yellow_bg, .dark_yellow_bg:visited, .dark_yellow_bg:focus { background: #fbb034 }
 
-		.white , .white:hover, .white:visited, .white:focus { color: #fff; }
-		.light_gray { color: #999 }
+		.white , .white:hover, .white:visited, .white:focus {/* color: #fff; */}
+		.light_gray {/* color: #999 */}
 		.normal_gray, .normal_gray:focus { color: #bbb }
 		.soft_dark_gray { color: #282828 }
 		.dark_gray { color: #222 }

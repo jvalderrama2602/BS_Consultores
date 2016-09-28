@@ -1,12 +1,15 @@
 <?php
 	$mail_type = 'ce';
 	//-----------------------------------------------------------------------------------------
-    $to_Email       = ''; //Replace with recipient email address
-    $subject        = ''; //Subject line for emails
+    $to_Email       = 'servicios@bsconsultores.com.ve'; //Replace with recipient email address
+    $subject        = 'Tiene una nueva consulta de su página'; //Subject line for emails
 
     // your recaptcha secret key
     $secret = '';      // Add your reCAPTCHA secret key
     //-----------------------------------------------------------------------------------------
+
+    // Language
+    $language = 'EN';
 
     /* Mailchimp setting */
     define('MC_APIKEY', ''); // Your API key from here - http://admin.mailchimp.com/account/api
@@ -23,4 +26,13 @@
     /* AWeber setting */
     define('AW_AUTHCODE', ''); // Your Authcode from here - https://auth.aweber.com/1.0/oauth/authorize_app/647b2efd
     define('AW_LISTNAME', ''); // List name from here - https://www.aweber.com/users/autoresponder/manage
+
+    /* ActiveCampaign setting */
+    define('ACTIVECAMPAIGN_URL', ''); // API_URL : Go to My Settings -> Developers
+    define('ACTIVECAMPAIGN_API_KEY', ''); // API_KEY : Go to My Settings -> Developers
+    define('list_id', ''); // API_KEY : Go to My Settings -> Developers
+
+    /* MailerLite setting */
+    define('MailerLite_API_KEY', ''); // API Key: Go to https://app.mailerlite.com/integrations/api/
+    define('MailerLite_LIST_ID', ''); // LIST ID (GroupID): Go to https://app.mailerlite.com/integrations/api/
 ?>

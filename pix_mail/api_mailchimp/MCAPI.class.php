@@ -1912,4 +1912,996 @@ class MCAPI {
                     string ip_signup IP Address this address signed up from. This may be blank if single optin is used.
                     string timestamp_signup The date/time the double optin was initiated. This may be blank if single optin is used.
                     string ip_opt IP Address this address opted in from.
-                    string t
+                    string timestamp_opt The date/time the optin completed
+                    int member_rating the rating of the subscriber. This will be 1 - 5 as described <a href="http://eepurl.com/f-2P" target="_blank">here</a>
+                    string campaign_id If the user is unsubscribed and they unsubscribed from a specific campaign, that campaign_id will be listed, otherwise this is not returned.
+                    array lists An associative array of the other lists this member belongs to - the key is the list id and the value is their status in that list.
+                    string timestamp The date/time this email address entered it's current status
+                    string info_changed The last time this record was changed. If the record is old enough, this may be blank.
+                    int web_id The Member id used in our web app, allows you to create a link directly to it
+                    bool is_gmonkey Whether the member is a <a href="http://mailchimp.com/features/golden-monkeys/" target="_blank">Golden Monkey</a> or not.
+                    array geo the geographic information if we have it. including:
+                        string latitude the latitude
+                        string longitude the longitude
+                        string gmtoff GMT offset
+                        string dstoff GMT offset during daylight savings (if DST not observered, will be same as gmtoff
+                        string timezone the timezone we've place them in
+                        string cc 2 digit ISO-3166 country code
+                        string region generally state, province, or similar
+                    array clients the client we've tracked the address as using with two keys:
+                        string name the common name of the client
+                        string icon_url a url representing a path to an icon representing this client
+                    array static_segments static segments the member is a part of including:
+                        int id the segment id
+                        string name the name given to the segment
+                        string added the date the member was added
+     */
+    function listMemberInfo($id, $email_address) {
+        $params = array();
+        $params["id"] = $id;
+        $params["email_address"] = $email_address;
+        return $this->callServer("listMemberInfo", $params);
+    }
+
+    /**
+     * Get the most recent 100 activities for particular list members (open, click, bounce, unsub, abuse, sent to)
+     *
+     * @section List Related
+     *
+     * @param string $id the list id to connect to. Get by calling lists()
+     * @param array $email_address an array of up to 50 email addresses to get information for OR the "id"(s) for the member returned from listMembers, Webhooks, and Campaigns. 
+     * @return array array of data and success/error counts
+                int success the number of subscribers successfully found on the list
+                int errors the number of subscribers who were not found on the list
+                array data an array of arrays where each activity record has:
+                    string action The action name, one of: open, click, bounce, unsub, abuse, sent
+                    string timestamp The date/time of the action
+                    string url For click actions, the url clicked, otherwise this is empty
+                    string bounce_type For bounce actions, the bounce type, otherwise this is empty
+                    string campaign_id The campaign id the action was related to, if it exists - otherwise empty (ie, direct unsub from list)
+     */
+    function listMemberActivity($id, $email_address) {
+        $params = array();
+        $params["id"] = $id;
+        $params["email_address"] = $email_address;
+        return $this->callServer("listMemberActivity", $params);
+    }
+
+    /**
+     * Get all email addresses that complained about a given campaign
+     *
+     * @section List Related
+     *
+     * @example mcapi_listAbuseReports.php
+     *
+     * @param string $id the list id to pull abuse reports for (can be gathered using lists())
+     * @param int $start optional for large data sets, the page number to start at - defaults to 1st page of data  (page 0)
+     * @param int $limit optional for large data sets, the number of results to return - defaults to 500, upper limit set at 1000
+     * @param string $since optional pull only messages since this time - use YYYY-MM-DD HH:II:SS format in <strong>GMT</strong>
+     * @return array the total of all reports and the specific reports reports this page
+                int total the total number of matching abuse reports
+                array data the actual data for each reports, including:
+                    string date date/time the abuse report was received and processed
+                    string email the email address that reported abuse
+                    string campaign_id the unique id for the campaign that report was made against
+                    string type an internal type generally specifying the orginating mail provider - may not be useful outside of filling report views
+     */
+    function listAbuseReports($id, $start=0, $limit=500, $since=NULL) {
+        $params = array();
+        $params["id"] = $id;
+        $params["start"] = $start;
+        $params["limit"] = $limit;
+        $params["since"] = $since;
+        return $this->callServer("listAbuseReports", $params);
+    }
+
+    /**
+     * Access the Growth History by Month for a given list.
+     *
+     * @section List Related
+     *
+     * @example mcapi_listGrowthHistory.php
+     *
+     * @param string $id the list id to connect to. Get by calling lists()
+     * @return array array of months and growth 
+                string month The Year and Month in question using YYYY-MM format
+                int existing number of existing subscribers to start the month
+                int imports number of subscribers imported during the month
+                int optins number of subscribers who opted-in during the month
+     */
+    function listGrowthHistory($id) {
+        $params = array();
+        $params["id"] = $id;
+        return $this->callServer("listGrowthHistory", $params);
+    }
+
+    /**
+     * Access up to the previous 180 days of daily detailed aggregated activity stats for a given list
+     *
+     * @section List Related
+     *
+     *
+     * @param string $id the list id to connect to. Get by calling lists()
+     * @return array array of array of daily values, each containing:
+                string day The day in YYYY-MM-DD
+                int emails_sent number of emails sent to the list
+                int unique_opens number of unique opens for the list
+                int recipient_clicks number of clicks for the list
+                int hard_bounce number of hard bounces for the list
+                int soft_bounce number of soft bounces for the list
+                int abuse_reports number of abuse reports for the list
+                int subs number of double optin subscribes for the list
+                int unsubs number of manual unsubscribes for the list
+                int other_adds number of non-double optin subscribes for the list (manual, API, or import)
+                int other_removes number of non-manual unsubscribes for the list (deletions, empties, soft-bounce removals)
+     */
+    function listActivity($id) {
+        $params = array();
+        $params["id"] = $id;
+        return $this->callServer("listActivity", $params);
+    }
+
+    /**
+     * Retrieve the locations (countries) that the list's subscribers have been tagged to based on geocoding their IP address
+     *
+     * @section List Related
+     *
+     * @param string $id the list id to connect to. Get by calling lists()
+     * @return array array of locations
+                string country the country name
+                string cc the 2 digit country code
+                double percent the percent of subscribers in the country
+                double total the total number of subscribers in the country
+     */
+    function listLocations($id) {
+        $params = array();
+        $params["id"] = $id;
+        return $this->callServer("listLocations", $params);
+    }
+
+    /**
+     * Retrieve the clients that the list's subscribers have been tagged as being used based on user agents seen. Made possible by <a href="http://user-agent-string.info" target="_blank">user-agent-string.info</a>
+     *
+     * @section List Related
+     *
+     * @param string $id the list id to connect to. Get by calling lists()
+     * @return array the desktop and mobile user agents in use on the list
+                array desktop desktop user agents and percentages
+                    double penetration the percent of desktop clients in use
+                    array clients a record for each containing:
+                        string client the common name for the client
+                        string icon a url to an image representing this client
+                        string percent percent of list using the client
+                        string members total members using the client
+                array mobile mobile user agents and percentages
+                    double penetration the percent of mobile clients in use
+                    array clients a record for each containing:
+                        string client the common name for the client
+                        string icon a url to an image representing this client
+                        string percent percent of list using the client
+                        string members total members using the client
+     */
+    function listClients($id) {
+        $params = array();
+        $params["id"] = $id;
+        return $this->callServer("listClients", $params);
+    }
+
+    /**
+     * Retrieve various templates available in the system, allowing some thing similar to our template gallery to be created.
+     *
+     * @section Template  Related
+     * @example mcapi_templates.php
+     * @example xml-rpc_templates.php
+     *
+     * @param array $types optional the types of templates to return
+                        boolean user    Custom templates for this user account. Defaults to true.
+                        boolean gallery Templates from our Gallery. Note that some templates that require extra configuration are withheld. (eg, the Etsy template). Defaults to false.
+                        boolean base    Our "start from scratch" extremely basic templates. Defaults to false.
+     * @param string $category optional for Gallery templates only, limit to a specific template category
+     * @param array $inactives optional options to control how inactive templates are returned, if at all
+                        boolean include user templates are not deleted, only set inactive. defaults to false.
+                        boolean only    only include inactive templates. defaults to false.
+     * @return array An array of arrays, one for each template
+                int id Id of the template
+                string name Name of the template
+                string layout Layout of the template - "basic", "left_column", "right_column", or "postcard"
+                string preview_image If we've generated it, the url of the preview image for the template. We do out best to keep these up to date, but Preview image urls are not guaranteed to be available
+                string date_created The date/time the template was created
+                boolean edit_source Whether or not you are able to edit the source of a template.
+     */
+    function templates($types=array (
+), $category=NULL, $inactives=array (
+)) {
+        $params = array();
+        $params["types"] = $types;
+        $params["category"] = $category;
+        $params["inactives"] = $inactives;
+        return $this->callServer("templates", $params);
+    }
+
+    /**
+     * Pull details for a specific template to help support editing
+     *
+     * @section Template  Related
+     *
+     * @param int $tid the template id - get from templates()
+     * @param string $type optional the template type to load - one of 'user', 'gallery', 'base', defaults to user.
+     * @return array an array of info to be used when editing
+                array default_content the default content broken down into the named editable sections for the template - dependant upon template, so not documented
+                array sections the valid editable section names - dependant upon template, so not documented
+                string source the full source of the template as if you exported it via our template editor
+                string preview similar to the source, but the rendered version of the source from our popup preview
+     */
+    function templateInfo($tid, $type='user') {
+        $params = array();
+        $params["tid"] = $tid;
+        $params["type"] = $type;
+        return $this->callServer("templateInfo", $params);
+    }
+
+    /**
+     * Create a new user template, <strong>NOT</strong> campaign content. These templates can then be applied while creating campaigns.
+     *
+     * @section Template  Related
+     * @example mcapi_create_template.php
+     * @example xml-rpc_create_template.php
+     *
+     * @param string $name the name for the template - names must be unique and a max of 50 bytes
+     * @param string $html a string specifying the entire template to be created. This is <strong>NOT</strong> campaign content. They are intended to utilize our <a href="http://www.mailchimp.com/resources/email-template-language/" target="_blank">template language</a>.
+     * @return int the new template id, otherwise an error is thrown.
+     */
+    function templateAdd($name, $html) {
+        $params = array();
+        $params["name"] = $name;
+        $params["html"] = $html;
+        return $this->callServer("templateAdd", $params);
+    }
+
+    /**
+     * Replace the content of a user template, <strong>NOT</strong> campaign content.
+     *
+     * @section Template  Related
+     *
+     * @param int $id the id of the user template to update
+     * @param array  $values the values to updates - while both are optional, at least one should be provided. Both can be updated at the same time.
+            string name optional the name for the template - names must be unique and a max of 50 bytes
+            string html optional a string specifying the entire template to be created. This is <strong>NOT</strong> campaign content. They are intended to utilize our <a href="http://www.mailchimp.com/resources/email-template-language/" target="_blank">template language</a>.
+        
+     * @return boolean true if the template was updated, otherwise an error will be thrown
+     */
+    function templateUpdate($id, $values) {
+        $params = array();
+        $params["id"] = $id;
+        $params["values"] = $values;
+        return $this->callServer("templateUpdate", $params);
+    }
+
+    /**
+     * Delete (deactivate) a user template
+     *
+     * @section Template  Related
+     *
+     * @param int $id the id of the user template to delete
+     * @return boolean true if the template was deleted, otherwise an error will be thrown
+     */
+    function templateDel($id) {
+        $params = array();
+        $params["id"] = $id;
+        return $this->callServer("templateDel", $params);
+    }
+
+    /**
+     * Undelete (reactivate) a user template
+     *
+     * @section Template  Related
+     *
+     * @param int $id the id of the user template to reactivate
+     * @return boolean true if the template was deleted, otherwise an error will be thrown
+     */
+    function templateUndel($id) {
+        $params = array();
+        $params["id"] = $id;
+        return $this->callServer("templateUndel", $params);
+    }
+
+    /**
+     * Retrieve lots of account information including payments made, plan info, some account stats, installed modules,
+     * contact info, and more. No private information like Credit Card numbers is available.
+     * 
+     * @section Helper
+     *
+     * @param array $exclude optional defaults to nothing for backwards compatibility. Allows controlling which extra arrays are returned since they can slow down calls. Valid keys are "modules", "orders", "rewards-credits", "rewards-inspections", "rewards-referrals", and "rewards-applied". Hint: "rewards-referrals" is typically the culprit. To avoid confusion, if data is excluded, the corresponding key <strong>will not be returned at all</strong>.   
+     * @return array containing the details for the account tied to this API Key
+                string username The Account username
+                string user_id The Account user unique id (for building some links)
+                bool is_trial Whether the Account is in Trial mode (can only send campaigns to less than 100 emails)
+                bool is_approved Whether the Account has been approved for purchases
+                bool has_activated Whether the Account has been activated
+                string timezone The timezone for the Account - default is "US/Eastern"
+                string plan_type Plan Type - "monthly", "payasyougo", or "free"
+                int plan_low <em>only for Monthly plans</em> - the lower tier for list size
+                int plan_high <em>only for Monthly plans</em> - the upper tier for list size
+                string plan_start_date <em>only for Monthly plans</em> - the start date for a monthly plan
+                int emails_left <em>only for Free and Pay-as-you-go plans</em> emails credits left for the account
+                bool pending_monthly Whether the account is finishing Pay As You Go credits before switching to a Monthly plan
+                string first_payment date of first payment
+                string last_payment date of most recent payment
+                int times_logged_in total number of times the account has been logged into via the web
+                string last_login date/time of last login via the web
+                string affiliate_link Monkey Rewards link for our Affiliate program
+                array contact Contact details for the account
+                    string fname First Name
+                    string lname Last Name
+                    string email Email Address
+                    string company Company Name
+                    string address1 Address Line 1
+                    string address2 Address Line 2
+                    string city City
+                    string state State or Province
+                    string zip Zip or Postal Code
+                    string country Country name
+                    string url Website URL
+                    string phone Phone number
+                    string fax Fax number
+                array modules Addons installed in the account
+                    string id An internal module id
+                    string name The module name
+                    string added The date the module was added
+                    array data Any extra data associated with this module as key=>value pairs
+                array orders Order details for the account
+                    int order_id The order id
+                    string type The order type - either "monthly" or "credits"
+                    double amount The order amount
+                    string date The order date
+                    double credits_used The total credits used
+                array rewards Rewards details for the account including credits & inspections earned, number of referals, referal details, and rewards used
+                    int referrals_this_month the total number of referrals this month
+                    string notify_on whether or not we notify the user when rewards are earned
+                    string notify_email the email address address used for rewards notifications
+                    array credits Email credits earned:
+                        int this_month credits earned this month
+                        int total_earned credits earned all time
+                        int remaining credits remaining
+                    array inspections Inbox Inspections earned:
+                        int this_month credits earned this month
+                        int total_earned credits earned all time
+                        int remaining credits remaining
+                    array referrals All referrals, including:
+                        string name the name of the account
+                        string email the email address associated with the account
+                        string signup_date the signup date for the account
+                        string type the source for the referral
+                    array applied Applied rewards, including:
+                        int value the number of credits user
+                        string date the date appplied
+                        int order_id the order number credits were applied to
+                        string order_desc the order description
+     */
+    function getAccountDetails($exclude=array (
+)) {
+        $params = array();
+        $params["exclude"] = $exclude;
+        return $this->callServer("getAccountDetails", $params);
+    }
+
+    /**
+     * Retrieve all domains verification records for an account
+     *
+     * @section Helper
+     *
+     * @return array records of domains verification has been attempted for
+                string domain the verified domain 
+                string status the status of the verification - either "verified" or "pending"
+                string email the email address used for verification
+     */
+    function getVerifiedDomains() {
+        $params = array();
+        return $this->callServer("getVerifiedDomains", $params);
+    }
+
+    /**
+     * Have HTML content auto-converted to a text-only format. You can send: plain HTML, an array of Template content, an existing Campaign Id, or an existing Template Id. Note that this will <strong>not</strong> save anything to or update any of your lists, campaigns, or templates.
+     *
+     * @section Helper
+     * @example xml-rpc_generateText.php
+     *
+     * @param string $type The type of content to parse. Must be one of: "html", "template", "url", "cid" (Campaign Id), or "tid" (Template Id)
+     * @param mixed $content The content to use. For "html" expects  a single string value, "template" expects an array like you send to campaignCreate, "url" expects a valid & public URL to pull from, "cid" expects a valid Campaign Id, and "tid" expects a valid Template Id on your account.
+     * @return string the content pass in converted to text.
+     */
+    function generateText($type, $content) {
+        $params = array();
+        $params["type"] = $type;
+        $params["content"] = $content;
+        return $this->callServer("generateText", $params);
+    }
+
+    /**
+     * Send your HTML content to have the CSS inlined and optionally remove the original styles.
+     *
+     * @section Helper
+     * @example xml-rpc_inlineCss.php
+     *
+     * @param string $html Your HTML content
+     * @param bool $strip_css optional Whether you want the CSS &lt;style&gt; tags stripped from the returned document. Defaults to false.
+     * @return string Your HTML content with all CSS inlined, just like if we sent it.
+     */
+    function inlineCss($html, $strip_css=false) {
+        $params = array();
+        $params["html"] = $html;
+        $params["strip_css"] = $strip_css;
+        return $this->callServer("inlineCss", $params);
+    }
+
+    /**
+     * List all the folders for a user account
+     *
+     * @section Folder  Related
+     * @example mcapi_folders.php
+     * @example xml-rpc_folders.php
+     *
+     * @param string $type optional the type of folders to return - either "campaign" or "autoresponder". Defaults to "campaign"
+     * @return array Array of folder structs (see Returned Fields for details)
+                int folder_id Folder Id for the given folder, this can be used in the campaigns() function to filter on.
+                string name Name of the given folder
+                string date_created The date/time the folder was created
+                string type The type of the folders being returned, just to make sure you know.
+     */
+    function folders($type='campaign') {
+        $params = array();
+        $params["type"] = $type;
+        return $this->callServer("folders", $params);
+    }
+
+    /**
+     * Add a new folder to file campaigns or autoresponders in
+     *
+     * @section Folder  Related
+     * @example mcapi_folderAdd.php
+     * @example xml-rpc_folderAdd.php
+     *
+     * @param string $name a unique name for a folder (max 100 bytes)
+     * @param string $type optional the type of folder to create - either "campaign" or "autoresponder". Defaults to "campaign"
+     * @return int the folder_id of the newly created folder.
+     */
+    function folderAdd($name, $type='campaign') {
+        $params = array();
+        $params["name"] = $name;
+        $params["type"] = $type;
+        return $this->callServer("folderAdd", $params);
+    }
+
+    /**
+     * Update the name of a folder for campaigns or autoresponders
+     *
+     * @section Folder  Related
+     *
+     * @param int $fid the folder id to update - retrieve from folders()
+     * @param string $name a new, unique name for the folder (max 100 bytes)
+     * @param string $type optional the type of folder to create - either "campaign" or "autoresponder". Defaults to "campaign"
+     * @return bool true if the update worked, otherwise an exception is thrown
+     */
+    function folderUpdate($fid, $name, $type='campaign') {
+        $params = array();
+        $params["fid"] = $fid;
+        $params["name"] = $name;
+        $params["type"] = $type;
+        return $this->callServer("folderUpdate", $params);
+    }
+
+    /**
+     * Delete a campaign or autoresponder folder. Note that this will simply make campaigns in the folder appear unfiled, they are not removed.
+     *
+     * @section Folder  Related
+     *
+     * @param int $fid the folder id to update - retrieve from folders()
+     * @param string $type optional the type of folder to create - either "campaign" or "autoresponder". Defaults to "campaign"
+     * @return bool true if the delete worked, otherwise an exception is thrown
+     */
+    function folderDel($fid, $type='campaign') {
+        $params = array();
+        $params["fid"] = $fid;
+        $params["type"] = $type;
+        return $this->callServer("folderDel", $params);
+    }
+
+    /**
+     * Retrieve the Ecommerce Orders for an account
+     * 
+     * @section Ecommerce
+     *
+     * @param int $start optional for large data sets, the page number to start at - defaults to 1st page of data  (page 0)
+     * @param int $limit optional for large data sets, the number of results to return - defaults to 100, upper limit set at 500
+     * @param string $since optional pull only messages since this time - use YYYY-MM-DD HH:II:SS format in <strong>GMT</strong>
+     * @return array the total matching orders and the specific orders for the requested page
+                int total the total matching orders
+                array data the actual data for each order being returned
+                    string store_id the store id generated by the plugin used to uniquely identify a store
+                    string store_name the store name collected by the plugin - often the domain name
+                    string order_id the internal order id the store tracked this order by
+                    string email  the email address that received this campaign and is associated with this order
+                    double order_total the order total
+                    double tax_total the total tax for the order (if collected)
+                    double ship_total the shipping total for the order (if collected)
+                    string order_date the date the order was tracked - from the store if possible, otherwise the GMT time we received it
+                    array lines containing the detail of line of the order:
+                        int line_num the line number
+                        int product_id the product id
+                        string product_name the product name
+                        string product_sku the sku for the product
+                        int product_category_id the category id for the product
+                        string product_category_name the category name for the product
+                        int qty the quantity ordered
+                        double cost the cost of the item                        
+     */
+    function ecommOrders($start=0, $limit=100, $since=NULL) {
+        $params = array();
+        $params["start"] = $start;
+        $params["limit"] = $limit;
+        $params["since"] = $since;
+        return $this->callServer("ecommOrders", $params);
+    }
+
+    /**
+     * Import Ecommerce Order Information to be used for Segmentation. This will generally be used by ecommerce package plugins 
+     * <a href="http://connect.mailchimp.com/category/ecommerce" target="_blank">provided by us or by 3rd part system developers</a>.
+     * @section Ecommerce
+     *
+     * @param array $order an array of information pertaining to the order that has completed. Use the following keys:
+                string id the Order Id
+                string email_id optional (kind of) the Email Id of the subscriber we should attach this order to (see the "mc_eid" query string variable a campaign passes) - either this or <strong>email</strong> is required. If both are provided, email_id takes precedence
+                string email optional (kind of) the Email Address we should attach this order to - either this or <strong>email_id</strong> is required. If both are provided, email_id takes precedence 
+                double total The Order Total (ie, the full amount the customer ends up paying)
+                string order_date optional the date of the order - if this is not provided, we will default the date to now
+                double shipping optional the total paid for Shipping Fees
+                double tax optional the total tax paid
+                string store_id a unique id for the store sending the order in (20 bytes max)
+                string store_name optional a "nice" name for the store - typically the base web address (ie, "store.mailchimp.com"). We will automatically update this if it changes (based on store_id)
+                string campaign_id optional the Campaign Id to track this order with (see the "mc_cid" query string variable a campaign passes)
+                array items the individual line items for an order using these keys:
+                <div style="padding-left:30px"><table>
+                    int line_num optional the line number of the item on the order. We will generate these if they are not passed
+                    int product_id the store's internal Id for the product. Lines that do no contain this will be skipped 
+                    string sku optional the store's internal SKU for the product. (max 30 bytes)
+                    string product_name the product name for the product_id associated with this item. We will auto update these as they change (based on product_id)
+                    int category_id the store's internal Id for the (main) category associated with this product. Our testing has found this to be a "best guess" scenario
+                    string category_name the category name for the category_id this product is in. Our testing has found this to be a "best guess" scenario. Our plugins walk the category heirarchy up and send "Root - SubCat1 - SubCat4", etc.
+                    double qty the quantity of the item ordered
+                    double cost the cost of a single item (ie, not the extended cost of the line)
+                </table></div>
+     * @return bool true if the data is saved, otherwise an error is thrown.
+     */
+    function ecommOrderAdd($order) {
+        $params = array();
+        $params["order"] = $order;
+        return $this->callServer("ecommOrderAdd", $params);
+    }
+
+    /**
+     * Delete Ecommerce Order Information used for segmentation. This will generally be used by ecommerce package plugins 
+     * <a href="/plugins/ecomm360.phtml">that we provide</a> or by 3rd part system developers.
+     * @section Ecommerce
+     *
+     * @param string $store_id the store id the order belongs to
+     * @param string $order_id the order id (generated by the store) to delete
+     * @return bool true if an order is deleted, otherwise an error is thrown.
+     */
+    function ecommOrderDel($store_id, $order_id) {
+        $params = array();
+        $params["store_id"] = $store_id;
+        $params["order_id"] = $order_id;
+        return $this->callServer("ecommOrderDel", $params);
+    }
+
+    /**
+     * Retrieve all List Ids a member is subscribed to.
+     *
+     * @section Helper
+     * 
+     * @param string $email_address the email address to check OR the email "id" returned from listMemberInfo, Webhooks, and Campaigns
+     * @return array An array of list_ids the member is subscribed to.
+     */
+    function listsForEmail($email_address) {
+        $params = array();
+        $params["email_address"] = $email_address;
+        return $this->callServer("listsForEmail", $params);
+    }
+
+    /**
+     * Retrieve all Campaigns Ids a member was sent
+     *
+     * @section Helper
+     * 
+     * @param string $email_address the email address to unsubscribe  OR the email "id" returned from listMemberInfo, Webhooks, and Campaigns
+     * @param array $options optional extra options to modify the returned data.
+                string list_id optional A list_id to limit the campaigns to
+                bool   verbose optional Whether or not to return verbose data (beta - this will change the return format into something undocumented, but consistent). defaults to false
+     * @return array An array of campaign_ids the member received
+     */
+    function campaignsForEmail($email_address, $options=NULL) {
+        $params = array();
+        $params["email_address"] = $email_address;
+        $params["options"] = $options;
+        return $this->callServer("campaignsForEmail", $params);
+    }
+
+    /**
+     * Return the current Chimp Chatter messages for an account.
+     *
+     * @section Helper
+     * 
+     * @return array An array of chatter messages and properties
+                string message The chatter message
+                string type The type of the message - one of lists:new-subscriber, lists:unsubscribes, lists:profile-updates, campaigns:facebook-likes, campaigns:facebook-comments, campaigns:forward-to-friend, lists:imports, or campaigns:inbox-inspections
+                string url a url into the web app that the message could link to
+                string list_id the list_id a message relates to, if applicable
+                string campaign_id the list_id a message relates to, if applicable
+                string update_time The date/time the message was last updated
+     */
+    function chimpChatter() {
+        $params = array();
+        return $this->callServer("chimpChatter", $params);
+    }
+
+    /**
+     * Search account wide or on a specific list using the specified query terms
+     *
+     * @section Helper
+     *
+     * @param string $query terms to search on
+     * @param string optional $id the list id to limit the search to. Get by calling lists()
+     * @param int offset optional the paging offset to use if more than 100 records match  
+     * @return array An array of both exact matches and partial matches over a full search
+     *     array exact_matches
+     *         int total total members matching
+     *         array members - each entry will match the data format for a single member as returned by listMemberInfo()
+     *     array full_search
+     *         int total total members matching
+     *         array members - each entry will match the data format for a single member as returned by listMemberInfo()
+     */
+    function searchMembers($query, $id=NULL, $offset=0) {
+        $params = array();
+        $params["query"] = $query;
+        $params["id"] = $id;
+        $params["offset"] = $offset;
+        return $this->callServer("searchMembers", $params);
+    }
+
+    /**
+     * Search all campaigns for the specified query terms
+     *
+     * @section Helper
+     *
+     * @param string $query terms to search on
+     * @param int offset optional the paging offset to use if more than 100 records match
+     * @param string snip_start optional by default clear text is returned. To have the match highlighted with something (like a strong HTML tag), <strong>both</strong> this and "snip_end" must be passed. You're on your own to not break the tags - 25 character max.
+     * @param string snip_end optional see "snip_start" above.  
+     * @return array An array of both exact matches and partial matches over a full search
+     *     array exact_matches
+     *         int total total members matching
+     *         array members - each entry will match the data format for a single member as returned by listMemberInfo()
+     *     array full_search
+     *         int total total members matching
+     *         array results - each entry will match the data format for a single member as returned by listMemberInfo()
+     */
+    function searchCampaigns($query, $offset=0, $snip_start=NULL, $snip_end=NULL) {
+        $params = array();
+        $params["query"] = $query;
+        $params["offset"] = $offset;
+        $params["snip_start"] = $snip_start;
+        $params["snip_end"] = $snip_end;
+        return $this->callServer("searchCampaigns", $params);
+    }
+
+    /**
+     * Retrieve a list of all MailChimp API Keys for this User
+     *
+     * @section Security Related
+     * @example xml-rpc_apikeyAdd.php
+     * @example mcapi_apikeyAdd.php
+     * 
+     * @param string $username Your MailChimp user name
+     * @param string $password Your MailChimp password
+     * @param boolean $expired optional - whether or not to include expired keys, defaults to false
+     * @return array an array of API keys including:
+                string apikey The api key that can be used
+                string created_at The date the key was created
+                string expired_at The date the key was expired
+     */
+    function apikeys($username, $password, $expired=false) {
+        $params = array();
+        $params["username"] = $username;
+        $params["password"] = $password;
+        $params["expired"] = $expired;
+        return $this->callServer("apikeys", $params);
+    }
+
+    /**
+     * Add an API Key to your account. We will generate a new key for you and return it.
+     *
+     * @section Security Related
+     * @example xml-rpc_apikeyAdd.php
+     *
+     * @param string $username Your MailChimp user name
+     * @param string $password Your MailChimp password
+     * @return string a new API Key that can be immediately used.
+     */
+    function apikeyAdd($username, $password) {
+        $params = array();
+        $params["username"] = $username;
+        $params["password"] = $password;
+        return $this->callServer("apikeyAdd", $params);
+    }
+
+    /**
+     * Expire a Specific API Key. Note that if you expire all of your keys, just visit <a href="http://admin.mailchimp.com/account/api" target="_blank">your API dashboard</a>
+     * to create a new one. If you are trying to shut off access to your account for an old developer, change your 
+     * MailChimp password, then expire all of the keys they had access to. Note that this takes effect immediately, so make 
+     * sure you replace the keys in any working application before expiring them! Consider yourself warned... 
+     *
+     * @section Security Related
+     * @example mcapi_apikeyExpire.php
+     * @example xml-rpc_apikeyExpire.php
+     *
+     * @param string $username Your MailChimp user name
+     * @param string $password Your MailChimp password
+     * @return boolean true if it worked, otherwise an error is thrown.
+     */
+    function apikeyExpire($username, $password) {
+        $params = array();
+        $params["username"] = $username;
+        $params["password"] = $password;
+        return $this->callServer("apikeyExpire", $params);
+    }
+
+    /**
+     * "Ping" the MailChimp API - a simple method you can call that will return a constant value as long as everything is good. Note
+     * than unlike most all of our methods, we don't throw an Exception if we are having issues. You will simply receive a different
+     * string back that will explain our view on what is going on.
+     *
+     * @section Helper
+     * @example xml-rpc_ping.php
+     *
+     * @return string returns "Everything's Chimpy!" if everything is chimpy, otherwise returns an error message
+     */
+    function ping() {
+        $params = array();
+        return $this->callServer("ping", $params);
+    }
+
+    /**
+     * Register a mobile device
+     *
+     * @section Mobile
+     *
+     * @param string $mobile_key a valid key identifying your mobile application.
+     * @param array $details the details for the device registration
+     * @return array the method completion status
+                string status The status (success) of the call if it completed. Otherwise an error is thrown.
+     */
+    function deviceRegister($mobile_key, $details) {
+        $params = array();
+        $params["mobile_key"] = $mobile_key;
+        $params["details"] = $details;
+        return $this->callServer("deviceRegister", $params);
+    }
+
+    /**
+     * Unregister a mobile device
+     *
+     * @section Mobile
+     *
+     * @param string $mobile_key a valid key identifying your mobile application.
+     * @param string $device_id the device id used for the device registration
+     * @return array the method completion status
+                string status The status (success) of the call if it completed. Otherwise an error is thrown.
+     */
+    function deviceUnregister($mobile_key, $device_id) {
+        $params = array();
+        $params["mobile_key"] = $mobile_key;
+        $params["device_id"] = $device_id;
+        return $this->callServer("deviceUnregister", $params);
+    }
+
+    /**
+     * Add Golden Monkey(s)
+     *
+     * @section Golden Monkeys
+     *
+     * @param string $id the list id to connect to. Get by calling lists()
+     * @param array $email_address an array of email addresses (max 50) to attempt to flag as Golden Monkeys
+     * @return array an array of API keys including:
+                int success The number of successful adds
+                int errors The number of unsuccessful adds
+                array data details on the errors which occurred
+                    string email_address the email address which errored out
+                    string error an error message explaining the error
+     */
+    function gmonkeyAdd($id, $email_address) {
+        $params = array();
+        $params["id"] = $id;
+        $params["email_address"] = $email_address;
+        return $this->callServer("gmonkeyAdd", $params);
+    }
+
+    /**
+     * Remove Golden Monkey(s)
+     *
+     * @section Golden Monkeys
+     *
+     * @param string $id the list id to connect to. Get by calling lists()
+     * @param array $email_address an array of email addresses (max 50) to attempt to remove Golden Monkey status from.
+     * @return array an array of API keys including:
+                int success The number of successful removals
+                int errors The number of unsuccessful removals
+                array data details on the errors which occurred
+                    string email_address the email address which errored out
+                    string error an error message explaining the error
+     */
+    function gmonkeyDel($id, $email_address) {
+        $params = array();
+        $params["id"] = $id;
+        $params["email_address"] = $email_address;
+        return $this->callServer("gmonkeyDel", $params);
+    }
+
+    /**
+     * Retrieve all Golden Monkey(s) for an account
+     *
+     * @section Golden Monkeys
+     *
+     * @return array an array for each Golden Monkey, including:
+                string list_id   The id of the List the Member appears on
+                string list_name The name of the List the Member appears on
+                string email     The email address of the member
+                string fname IF a FNAME merge field exists on the list, that value for the member
+                string lname IF a LNAME merge field exists on the list, that value for the member
+                int    member_rating the rating of the subscriber. This will be 1 - 5 as described <a href="http://eepurl.com/f-2P" target="_blank">here</a>
+                string member_since the datetime the member was added and/or confirmed
+    */
+    function gmonkeyMembers() {
+        $params = array();
+        return $this->callServer("gmonkeyMembers", $params);
+    }
+
+    /**
+     * Retrieve all Activity (opens/clicks) for Golden Monkeys over the past 10 days
+     *
+     * @section Golden Monkeys
+     *
+     * @return array an array for each Golden Monkey, including:
+                string action    The action taken - either "open" or "click"
+                string timestamp The datetime the action occurred
+                string url       IF the action is a click, the url that was clicked
+                string unique_id The campaign_id of the List the Member appears on
+                string title     The campaign title
+                string list_name The name of the List the Member appears on
+                string email     The email address of the member
+                string fname IF a FNAME merge field exists on the list, that value for the member
+                string lname IF a LNAME merge field exists on the list, that value for the member
+                int    member_rating the rating of the subscriber. This will be 1 - 5 as described <a href="http://eepurl.com/f-2P" target="_blank">here</a>
+                string member_since the datetime the member was added and/or confirmed
+                array geo the geographic information if we have it. including:
+                    string latitude the latitude
+                    string longitude the longitude
+                    string gmtoff GMT offset
+                    string dstoff GMT offset during daylight savings (if DST not observered, will be same as gmtoff
+                    string timezone the timezone we've place them in
+                    string cc 2 digit ISO-3166 country code
+                    string region generally state, province, or similar
+    */
+    function gmonkeyActivity() {
+        $params = array();
+        return $this->callServer("gmonkeyActivity", $params);
+    }
+
+    /**
+     * Internal function - proxy method for certain XML-RPC calls | DO NOT CALL
+     * @param mixed Method to call, with any parameters to pass along
+     * @return mixed the result of the call
+     */
+    function callMethod() {
+        $params = array();
+        return $this->callServer("callMethod", $params);
+    }
+    
+    /**
+     * Actually connect to the server and call the requested methods, parsing the result
+     * You should never have to call this function manually
+     */
+    function callServer($method, $params) {
+	    $dc = "us1";
+	    if (strstr($this->api_key,"-")){
+        	list($key, $dc) = explode("-",$this->api_key,2);
+            if (!$dc) $dc = "us1";
+        }
+        $host = $dc.".".$this->apiUrl["host"];
+		$params["apikey"] = $this->api_key;
+
+        $this->errorMessage = "";
+        $this->errorCode = "";
+        $sep_changed = false;
+        //sigh, apparently some distribs change this to &amp; by default
+        if (ini_get("arg_separator.output")!="&"){
+            $sep_changed = true;
+            $orig_sep = ini_get("arg_separator.output");
+            ini_set("arg_separator.output", "&");
+        }
+        $post_vars = http_build_query($params);
+        if ($sep_changed){
+            ini_set("arg_separator.output", $orig_sep);
+        }
+        
+        $payload = "POST " . $this->apiUrl["path"] . "?" . $this->apiUrl["query"] . "&method=" . $method . " HTTP/1.0\r\n";
+        $payload .= "Host: " . $host . "\r\n";
+        $payload .= "User-Agent: MCAPI/" . $this->version ."\r\n";
+        $payload .= "Content-type: application/x-www-form-urlencoded\r\n";
+        $payload .= "Content-length: " . strlen($post_vars) . "\r\n";
+        $payload .= "Connection: close \r\n\r\n";
+        $payload .= $post_vars;
+        
+        ob_start();
+        if ($this->secure){
+            $sock = fsockopen("ssl://".$host, 443, $errno, $errstr, 30);
+        } else {
+            $sock = fsockopen($host, 80, $errno, $errstr, 30);
+        }
+        if(!$sock) {
+            $this->errorMessage = "Could not connect (ERR $errno: $errstr)";
+            $this->errorCode = "-99";
+            ob_end_clean();
+            return false;
+        }
+        
+        $response = "";
+        fwrite($sock, $payload);
+        stream_set_timeout($sock, $this->timeout);
+        $info = stream_get_meta_data($sock);
+        while ((!feof($sock)) && (!$info["timed_out"])) {
+            $response .= fread($sock, $this->chunkSize);
+            $info = stream_get_meta_data($sock);
+        }
+        fclose($sock);
+        ob_end_clean();
+        if ($info["timed_out"]) {
+            $this->errorMessage = "Could not read response (timed out)";
+            $this->errorCode = -98;
+            return false;
+        }
+
+        list($headers, $response) = explode("\r\n\r\n", $response, 2);
+        $headers = explode("\r\n", $headers);
+        $errored = false;
+        foreach($headers as $h){
+            if (substr($h,0,26)==="X-MailChimp-API-Error-Code"){
+                $errored = true;
+                $error_code = trim(substr($h,27));
+                break;
+            }
+        }
+        
+        if(ini_get("magic_quotes_runtime")) $response = stripslashes($response);
+        
+        $serial = unserialize($response);
+        if($response && $serial === false) {
+        	$response = array("error" => "Bad Response.  Got This: " . $response, "code" => "-99");
+        } else {
+        	$response = $serial;
+        }
+        if($errored && is_array($response) && isset($response["error"])) {
+            $this->errorMessage = $response["error"];
+            $this->errorCode = $response["code"];
+            return false;
+        } elseif($errored){
+            $this->errorMessage = "No error message was found";
+            $this->errorCode = $error_code;
+            return false;
+        }
+        
+        return $response;
+    }
+
+}
+
+?>
