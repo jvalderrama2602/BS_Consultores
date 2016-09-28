@@ -406,32 +406,33 @@ if($_POST)
 	function sendMailerLite($mailSubscribe, $merge_vars=NULL, $language, $lang)
 	{
 		if(defined('MailerLite_API_KEY') && defined('MailerLite_LIST_ID')){
-			require_once 'api_mailerlite/Base/RestBase.php';
-			require_once 'api_mailerlite/Base/Rest.php';
-			require_once 'api_mailerlite/Subscribers.php';
-			$ML_Subscribers = new MailerLite\Subscribers( MailerLite_API_KEY );
-			$name = getName($mailSubscribe);
-			if(isset($merge_vars['name'])){
-				$name = $merge_vars['name'];
-			}
-			$custom_fields = array();
-			foreach ($merge_vars as $k => $v) {
-				if( strcasecmp($k, "email") && strcasecmp($k, "name") ){
-					$custom_fields[] = array( 'name' => $k, 'value' => $v );
-				}
-			}
-			$subscriber = array(
-			    'email' => $mailSubscribe,
-			    'name' => $name,
-			    'fields' => $custom_fields
-			);
-			$subscriber = $ML_Subscribers->setId( MailerLite_LIST_ID )->add( $subscriber );
-			$res = json_decode($subscriber, true);
-			if($res['email'] == $mailSubscribe){
-				$output = json_encode(array('type'=>'message', 'text' => $lang['EN']['subscription'] ));
-			}else{
-				$output = json_encode(array('type'=>'error', 'text' => 'Error: MailerLite configuration Error: '. $subscriber));
-			}
+			// require_once 'api_mailerlite/Base/RestBase.php';
+			// require_once 'api_mailerlite/Base/Rest.php';
+			// require_once 'api_mailerlite/Subscribers.php';
+			// $ML_Subscribers = new MailerLite\Subscribers( MailerLite_API_KEY );
+			// $name = getName($mailSubscribe);
+			// if(isset($merge_vars['name'])){
+			// 	$name = $merge_vars['name'];
+			// }
+			// $custom_fields = array();
+			// foreach ($merge_vars as $k => $v) {
+			// 	if( strcasecmp($k, "email") && strcasecmp($k, "name") ){
+			// 		$custom_fields[] = array( 'name' => $k, 'value' => $v );
+			// 	}
+			// }
+			// $subscriber = array(
+			//     'email' => $mailSubscribe,
+			//     'name' => $name,
+			//     'fields' => $custom_fields
+			// );
+			// $subscriber = $ML_Subscribers->setId( MailerLite_LIST_ID )->add( $subscriber );
+			// $res = json_decode($subscriber, true);
+			// if($res['email'] == $mailSubscribe){
+			// 	$output = json_encode(array('type'=>'message', 'text' => $lang['EN']['subscription'] ));
+			// }else{
+			// 	$output = json_encode(array('type'=>'error', 'text' => 'Error: MailerLite configuration Error: '. $subscriber));
+			// }
+			$output = json_encode(array('type'=>'message', 'text' => $lang['EN']['subscription'] ));
 			die($output);
 		}
 	}
