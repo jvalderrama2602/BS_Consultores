@@ -151,7 +151,7 @@ iframe.c1 {
 
 /*--- Part 2:   #Contact     ---*/
 .pixfort_normal_1 .page_style {
-    background:linear-gradient(to bottom,rgba(0,175,239,0) 0%,rgba(0,175,239,0) 2%,rgba(0,175,239,0) 7%,rgba(240,47,23,0) 11%,rgba(124,109,127,0) 54%,rgba(0,175,239,0.39) 100%),url(../images/FInanzasPyme12.jpg) #000 fixed no-repeat;
+    background:linear-gradient(to bottom,rgba(0,175,239,0) 0%,rgba(0,175,239,0) 2%,rgba(0,175,239,0) 7%,rgba(240,47,23,0) 11%,rgba(124,109,127,0) 54%,rgba(0,175,239,0.39) 100%),url(../images/1_normal/home-bg.png) #000 fixed no-repeat;
     -webkit-background-size:cover;
     -moz-background-size:cover;
     -o-background-size:cover;
@@ -164,9 +164,9 @@ iframe.c1 {
 
 .pixfort_normal_1 .title_style {
     font-size:48px;
-    /*color:#fff;*/
+    color:#fff;
     
-    font-weight:400;
+    font-weight:700;
     padding-top:160px;
     line-height:100%
 }
@@ -175,7 +175,7 @@ iframe.c1 {
     max-width:640px;
     margin-left:auto;
     margin-right:auto;
-    /*color:#d3d3d3;*/
+    color:#d3d3d3;
     font-size:18px;
     line-height:150%;
     
@@ -563,7 +563,7 @@ iframe.c1 {
 }
 
 .confirm_page_1 {
-    background:#fff;
+    background:#00aeef;
     box-shadow:inset 0 -5px 0 0 rgba(0,0,0,0.3)!important;
     border-radius:2px
 }
@@ -571,7 +571,7 @@ iframe.c1 {
 .confirm_page_1 .conf_img {
     border-radius:100%;
     display:inline-block;
-    border:2px solid #848484;
+    border:2px solid #fff;
     padding:25px;
     margin-top:15px;
     margin-bottom:5px;
@@ -585,7 +585,7 @@ iframe.c1 {
 
 .pixfort_normal_1 .confirm_header {
     text-align:center;
-    color:#848484;
+    color:#fff;
     line-height:35px;
     width:500px;
     max-width:100%;
@@ -597,7 +597,7 @@ iframe.c1 {
 .pixfort_normal_1 .confirm_text {
     text-align:center;
     font-size:16px;
-    color:#848484;
+    color:rgba(255,255,255,0.5);
     padding-top:10px;
     padding-bottom:30px;
     font-weight:700
@@ -1560,9 +1560,9 @@ iframe.c1 {
 
 /*  Part 2:  #Features      */
 .pixfort_app_3 .cal_style {
-    background:#f2f2f2;
+    background:#fcf7e7;
     background-size:cover;
-    box-shadow: 0px -3px #bdbdbd inset;
+    box-shadow: 0px -3px #eae2c8 inset;
 }
 
 .pixfort_app_3 .pad_top {
@@ -2126,8 +2126,7 @@ iframe.c1 {
 
 /*---  Part 2:  #Contact   ---*/
 .pixfort_real_estate_4 .page_style {
-    background:url(../images/FInanzasPyme12.jpg) fixed no-repeat center top;
-    background-size: 80%; 
+    background:linear-gradient(rgba(138,186,86,0),rgba(138,186,86,0.3) 95%),url(../images/4_real_estate/bg.png) fixed no-repeat center top;
     -webkit-background-size:cover;
     -moz-background-size:cover;
     -o-background-size:cover;
@@ -2135,7 +2134,7 @@ iframe.c1 {
 }
 
 .pixfort_real_estate_4 .text_page {
-      text-align:center
+    text-align:center
 }
 
 .pixfort_real_estate_4 .home_st {
@@ -2145,10 +2144,11 @@ iframe.c1 {
 
 .pixfort_real_estate_4 .start_style {
     text-align:center;
-    font-size:30px;
+    font-size:48px;
     font-weight:700;
-    color:rgb(102, 102, 102);
+    color:#fff
 }
+
 .pixfort_real_estate_4 .txt_start {
     text-align:center;
     color:#d3d3d3;
@@ -2159,7 +2159,7 @@ iframe.c1 {
 }
 
 .pixfort_real_estate_4 .gethouse_btn a {
-    background:#00aeef;
+    background:#8aba56;
     border:none;
     border-radius:3px;
     font-weight:400;
@@ -2173,7 +2173,7 @@ iframe.c1 {
 }
 
 .pixfort_real_estate_4 .gethouse_btn a:hover {
-    background:#00aeef;
+    background:#77b141;
     border:none;
     border-radius:3px;
     font-weight:400;
@@ -2727,7 +2727,7 @@ iframe.c1 {
 
 .pixfort_real_estate_4 .confirm_header {
     text-align:center;
-    /*color:#fff;*/
+    color:#fff;
     margin-left:auto;
     margin-right:auto;
     line-height:35px;
@@ -2743,7 +2743,7 @@ iframe.c1 {
 .pixfort_real_estate_4 .confirm_text {
     text-align:center;
     font-size:16px;
-   /* color:rgba(255,255,255,0.7);*/
+    color:rgba(255,255,255,0.7);
     
     padding-top:10px;
     padding-bottom:30px;
@@ -2762,7 +2762,7 @@ iframe.c1 {
 }
 
 .pixfort_real_estate_4 .confirm_social .confirm_social_box {
-    /*background:rgba(0,0,0,0.2);*/
+    background:rgba(0,0,0,0.2);
     display:inline-block;
     margin-right:auto;
     margin-left:auto;
@@ -3776,7 +3776,7 @@ iframe.c1 {
 }
 
 .pixfort_university_6 .subject_st {
-   /* color:#a9a9a9;*/
+    color:#a9a9a9;
     font-size:16px;
     
     line-height:26px;
@@ -3806,7 +3806,7 @@ iframe.c1 {
 }
 
 .pixfort_university_6 .send_btn .submit_btn {
-    background:#00aeef;
+    background:#7cc576;
     padding:10px 30px;
     box-shadow: none;
     border: none;
@@ -4008,7 +4008,7 @@ iframe.c1 {
 }
 
 .confirm_page_6 {
-  /*  background:#7cc576;*/
+    background:#7cc576;
     box-shadow:inset 0 -3px 0 0 rgba(0,0,0,0.3)!important;
     border-radius:2px;
     width:500px;
@@ -4017,7 +4017,7 @@ iframe.c1 {
 
 .pixfort_university_6 .confirm_header {
     text-align:center;
-   /* color:#fff;*/
+    color:#fff;
     margin-left:auto;
     margin-right:auto;
     line-height:35px;
@@ -4033,7 +4033,7 @@ iframe.c1 {
 .pixfort_university_6 .confirm_text {
     text-align:center;
     font-size:16px;
-   /* color:rgba(255,255,255,0.7);*/
+    color:rgba(255,255,255,0.7);
     
     padding-top:10px;
     padding-bottom:30px;
@@ -6109,8 +6109,7 @@ iframe.c1 {
 }
 
 .pixfort_business_10 .check_st {
-    text-align:left;
-   
+    text-align:left
 }
 
 .pixfort_business_10 .carac_st {
@@ -7660,7 +7659,7 @@ iframe.c1 {
 }
 
 .pixfort_gym_13 .substyle {
-    background:rgba(235,234,234,0.85);
+    background:#ebeaea;
     padding-top:40px;
     padding-bottom:5px;
 }

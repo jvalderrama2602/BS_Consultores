@@ -117,7 +117,7 @@
                          <span class="pi pixicon-notebook" style="font-size: 48px; color:#666666"></span>
                           <!--  <img src="images/3_app/1.png" alt="">-->
                         </div>
-                        <div class="ctext_style">
+                        <div class="ctext_style" onclick="pagina01()">
                             <p class="calc_st editContent">Servicios Contables</p>
                             <p class="calc_text editContent">Mantenga su situación financiera al día.</p>
                         </div>
@@ -126,7 +126,7 @@
                         <div class="img_st">
                             <span class="pi pixicon-notebook" style="font-size: 48px; color:#666666"></span>
                         </div>
-                        <div class="ctext_style">
+                        <div class="ctext_style" onclick="pagina02()>
                             <p class="calc_st editContent">Servicios Tributarios</p>
                             <p class="calc_text editContent">Cumpla con sus deberes formales ante organismos públicos.</p>
                         </div>
@@ -340,7 +340,10 @@
 <script src="js-files/bootstrap-switch.js"></script>
 <script src="js-files/custom3.js" type="text/javascript"></script>
 
-
+<script type="text/javascript">
+    function pagina01(){document.location.href="Servicios-Contables.html"};
+    function pagina02(){document.location.href="Servicios-Tributarios.html"};
+</script>
 
 </body>
 </html>

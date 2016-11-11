@@ -632,17 +632,17 @@ color: rgb(255, 255, 255); font-size: 18px;  background-color: rgb(247, 148, 29)
 
 
 	/*  Construction  */
-	.construction .area_1 { margin-top: 120px; }
+	.construction .area_1 { margin-top: 15px; }
 	.construction .area_1 .const_title { margin-top: 60px 0;color: #fff;font-size: 54px;font-weight: 100 !important;display: inline-block;line-height: 60px;margin-bottom: 30px; }
 	.construction .area_1 p { color: #ddd;font-size: 20px;max-width: 490px;line-height: 26px; }
-	.construction .join_us_section { background: linear-gradient(rgba(0,0,0,0.35),rgba(0,0,0,0.35)),url(../images/20_construction/construction-work-building-bg.jpg) #333 fixed no-repeat center;
+	.construction .join_us_section { background: linear-gradient(rgba(0,0,0,0.35),rgba(0,0,0,0.35)),url(https://static.pexels.com/photos/159804/accountant-accounting-adviser-advisor-159804-large.jpeg) #333 fixed no-repeat center;
 		padding: 60px 0;
 		-webkit-background-size:cover;
 		-moz-background-size:cover;
 		-o-background-size:cover;
 		background-size:cover; }
-	.construction .send_btn button, .construction .link_3_btn a { background: #ffcc33;text-shadow: 1px 1px 1px rgba(0,0,0,0.15); }
-	.construction .send_btn button:hover, .construction .link_3_btn a:hover { background: #e4b423; }
+	.construction .send_btn button, .construction .link_3_btn a { background:#00aeef;text-shadow: 1px 1px 1px rgba(0,0,0,0.15); }
+	.construction .send_btn button:hover, .construction .link_3_btn a:hover { background: #00aeef; }
 	.confirm_page.construction { background: #e4b423; }
 	.construction .part_st { background: #fff;padding: 20px;}
 	.construction .logo_style { border-radius: 3px;width: 100%;height: auto;}
