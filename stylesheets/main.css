@@ -633,7 +633,7 @@ color: rgb(255, 255, 255); font-size: 18px;  background-color: rgb(247, 148, 29)
 
 	/*  Construction  */
 	.construction .area_1 { margin-top: 15px; }
-	.construction .area_1 .const_title { margin-top: 60px 0;color: #fff;font-size: 54px;font-weight: 100 !important;display: inline-block;line-height: 60px;margin-bottom: 30px; }
+	.construction .area_1 .const_title { margin-top: 60px 0;color: #fff;font-size: 30px;font-weight: 100 !important;display: inline-block;line-height: 60px;margin-bottom: 10px; }
 	.construction .area_1 p { color: #ddd;font-size: 20px;max-width: 490px;line-height: 26px; }
 	.construction .join_us_section { background: linear-gradient(rgba(0,0,0,0.35),rgba(0,0,0,0.35)),url(https://static.pexels.com/photos/159804/accountant-accounting-adviser-advisor-159804-large.jpeg) #333 fixed no-repeat center;
 		padding: 60px 0;
